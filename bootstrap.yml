@@ -1,11 +1,15 @@
 - hosts: web
   gather_facts: false
   tasks:
-    - wait_for_connection:
-        timeout: 60
-        delay: 10
-        connect_timeout: 10
-
+    - name: Wait for SSH connection with retries
+      wait_for_connection:
+        timeout: 30
+        delay: 5
+        connect_timeout: 5
+      retries: 20
+      until: result is succeeded
+      register: result
+  
     - authorized_key:
         user: root
         key: "{{ lookup('file', '/root/.ssh/id_ed25519.pub') }}"
