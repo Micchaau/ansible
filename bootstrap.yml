@@ -2,6 +2,9 @@
   gather_facts: false
   tasks:
     - wait_for_connection:
+        timeout: 60
+        delay: 10
+        connect_timeout: 10
 
     - authorized_key:
         user: root
