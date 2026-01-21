@@ -1,0 +1,14 @@
+- hosts: all
+  become: true
+  roles:
+    - common
+
+- hosts: web
+  become: true
+  roles:
+    - web
+
+- hosts: mgmt
+  become: true
+  roles:
+    - mgmt
