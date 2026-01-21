@@ -19,3 +19,12 @@
     name: fail2ban
     state: started
     enabled: yes
+    
+- name: Generate SSH key for Ansible on MGMT
+  openssh_keypair:
+    path: /root/.ssh/id_ansible
+    type: ed25519
+    owner: root
+    group: root
+    mode: '0600'
+  register: ansible_ssh_key

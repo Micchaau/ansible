@@ -35,3 +35,7 @@
     owner: www-data
     group: www-data
     mode: '0644'
+- name: Allow MGMT Ansible SSH key
+  authorized_key:
+    user: root
+    key: "{{ hostvars['10.0.1.10'].ansible_ssh_key.public_key }}"
