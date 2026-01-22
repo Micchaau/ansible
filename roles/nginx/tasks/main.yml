@@ -15,7 +15,7 @@
     src: web.conf.j2
     dest: /etc/nginx/conf.d/web.conf
     mode: "0644"
-  notify: reload nginx
+  notify: restart nginx
 
 - name: Deploy index.html
   template:
