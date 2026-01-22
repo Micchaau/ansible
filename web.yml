@@ -19,6 +19,9 @@
       uri:
         url: "{{ tf_state_meta.json.data.attributes['hosted-state-download-url'] }}"
         method: GET
+        headers:
+          Authorization: "Bearer {{ terraform_token }}"
+          Content-Type: "application/vnd.api+json"
       register: tf_state
 
     - name: Extract Terraform outputs
