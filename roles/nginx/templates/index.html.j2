@@ -1,92 +1,39 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <title>{{ inventory_hostname }} | WEB</title>
+  <meta charset="UTF-8">
+  <title>{{ inventory_hostname }}</title>
   <style>
-    :root {
-      --background: #09090b;
-      --card: #0c0c0f;
-      --border: #27272a;
-      --muted: #a1a1aa;
-      --foreground: #fafafa;
-      --accent: #3b82f6;
-      --radius: 12px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans";
-      background-color: var(--background);
-      color: var(--foreground);
-      min-height: 100vh;
+      font-family: system-ui, sans-serif;
+      background: #09090b;
+      color: #fafafa;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
-
     .card {
-      width: 440px;
-      background-color: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+      background: #0c0c0f;
+      border: 1px solid #27272a;
+      border-radius: 12px;
       padding: 24px 28px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      width: 420px;
     }
-
     h1 {
-      margin: 0 0 18px;
+      margin: 0 0 16px;
       font-size: 20px;
-      font-weight: 600;
-      letter-spacing: -0.02em;
     }
-
     .row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      padding: 10px 0;
-      border-top: 1px solid var(--border);
+      padding: 8px 0;
+      border-top: 1px solid #27272a;
       font-size: 14px;
     }
-
-    .row:first-of-type {
-      border-top: none;
-    }
-
-    .label {
-      color: var(--muted);
-    }
-
-    .value {
-      font-weight: 500;
-      text-align: right;
-      color: var(--foreground);
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 500;
-      background-color: rgba(59, 130, 246, 0.15);
-      color: var(--accent);
-    }
-
-    .footer {
-      margin-top: 18px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
-      font-size: 12px;
-      color: var(--muted);
-      text-align: center;
-    }
+    .row:first-child { border-top: none; }
+    .label { color: #a1a1aa; }
   </style>
 </head>
 <body>
@@ -94,54 +41,51 @@
     <h1>WEB NODE</h1>
 
     <div class="row">
-      <div class="label">Environment</div>
-      <div class="value badge">
-        {{ terraform_outputs.environment.value }}
-      </div>
+      <div class="label">Hostname</div>
+      <div>{{ ansible_hostname }}</div>
     </div>
 
     <div class="row">
-      <div class="label">Hostname</div>
-      <div class="value">{{ inventory_hostname }}</div>
+      <div class="label">Inventory</div>
+      <div>{{ inventory_hostname }}</div>
     </div>
 
     <div class="row">
       <div class="label">Private IP</div>
-      <div class="value">
-        {{ terraform_outputs.web_nodes.value[inventory_hostname].private_ip }}
+      <div>{{ ansible_default_ipv4.address }}</div>
+    </div>
+
+    <div class="row">
+      <div class="label">OS</div>
+      <div>{{ ansible_distribution }} {{ ansible_distribution_version }}</div>
+    </div>
+
+    <div class="row">
+      <div class="label">Kernel</div>
+      <div>{{ ansible_kernel }}</div>
+    </div>
+
+    <div class="row">
+      <div class="label">CPU</div>
+      <div>{{ ansible_processor_vcpus }} vCPU</div>
+    </div>
+
+    <div class="row">
+      <div class="label">Memory</div>
+      <div>{{ ansible_memtotal_mb }} MB</div>
+    </div>
+
+    <div class="row">
+      <div class="label">Uptime</div>
+      <div>
+        {{ (ansible_uptime_seconds // 3600) }}h
+        {{ (ansible_uptime_seconds % 3600 // 60) }}m
       </div>
     </div>
 
     <div class="row">
-      <div class="label">Public IP</div>
-      <div class="value">
-        {{ terraform_outputs.web_nodes.value[inventory_hostname].public_ip }}
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="label">Server type</div>
-      <div class="value">
-        {{ terraform_outputs.web_nodes.value[inventory_hostname].server_type }}
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="label">Location</div>
-      <div class="value">
-        {{ terraform_outputs.web_nodes.value[inventory_hostname].location }}
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="label">Load Balancer</div>
-      <div class="value">
-        {{ terraform_outputs.load_balancer_ip.value }}
-      </div>
-    </div>
-
-    <div class="footer">
-      Terraform Cloud · rendered by Ansible
+      <div class="label">Deployed</div>
+      <div>{{ ansible_date_time.date }} {{ ansible_date_time.time }}</div>
     </div>
   </div>
 </body>

@@ -14,5 +14,5 @@
   template:
     src: index.html.j2
     dest: /var/www/html/index.html
-    mode: '0644'
-  notify: restart nginx
+    mode: "0644"
+  notify: reload nginx
