@@ -51,8 +51,13 @@
     </div>
 
     <div class="row">
-      <div class="label">Private IP</div>
+      <div class="label">Public IP</div>
       <div>{{ ansible_default_ipv4.address }}</div>
+    </div>
+
+    <div class="row">
+      <div class="label">Private IP</div>
+      <div>{{ ansible_facts.interfaces.enp7s0.ipv4.address }}</div>
     </div>
 
     <div class="row">
