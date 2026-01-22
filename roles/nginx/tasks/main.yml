@@ -10,9 +10,34 @@
     enabled: true
     state: started
 
+- name: Deploy nginx vhost config
+  template:
+    src: web.conf.j2
+    dest: /etc/nginx/conf.d/web.conf
+    mode: "0644"
+  notify: reload nginx
+
 - name: Deploy index.html
   template:
     src: index.html.j2
     dest: /var/www/html/index.html
     mode: "0644"
   notify: restart nginx
+
+- name: Deploy maintenance page
+  template:
+    src: maintenance.html.j2
+    dest: /var/www/html/maintenance.html
+    mode: "0644"
+
+- name: Enable maintenance mode
+  file:
+    path: /var/www/html/.maintenance
+    state: touch
+  tags: maintenance_on
+
+- name: Disable maintenance mode
+  file:
+    path: /var/www/html/.maintenance
+    state: absent
+  tags: maintenance_off
