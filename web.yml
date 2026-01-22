@@ -6,37 +6,30 @@
     terraform_token: "{{ lookup('env', 'TFC_TOKEN') }}"
 
   pre_tasks:
-    - name: Get current Terraform state version
+    - name: Get Terraform Cloud outputs (CORRECT WAY)
       uri:
-        url: "https://app.terraform.io/api/v2/workspaces/{{ terraform_workspace_id }}/current-state-version"
+        url: "https://app.terraform.io/api/v2/workspaces/{{ terraform_workspace_id }}/outputs"
         method: GET
         headers:
           Authorization: "Bearer {{ terraform_token }}"
           Content-Type: "application/vnd.api+json"
-      register: tf_state_meta
+      register: tf_outputs
 
-    - name: Download Terraform state
-      uri:
-        url: "{{ tf_state_meta.json.data.attributes['hosted-state-download-url'] }}"
-        method: GET
-        headers:
-          Authorization: "Bearer {{ terraform_token }}"
-          Content-Type: "application/vnd.api+json"
-      register: tf_state
-
-    - name: Extract Terraform outputs
+    - name: Normalize Terraform outputs
       set_fact:
         terraform_outputs: >-
           {{
-            tf_state.json.outputs
-              if (tf_state is mapping and 'json' in tf_state)
-            else
-            (tf_state.content | from_json).outputs
-              if (tf_state is mapping and 'content' in tf_state)
-            else
-            tf_state.outputs
+            dict(
+              tf_outputs.json.data
+              | map(attribute='attributes')
+              | map(attribute='name')
+              | zip(
+                  tf_outputs.json.data
+                  | map(attribute='attributes')
+                  | map(attribute='value')
+                )
+            )
           }}
-
 
   roles:
     - nginx
