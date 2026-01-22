@@ -5,15 +5,20 @@ server {
     root /var/www/html;
     index index.html;
 
+    location = /health {
+        return 200 "OK\n";
+    }
+
     if (-f /var/www/html/.maintenance) {
         return 503;
     }
 
-    error_page 503 /maintenance.html;
+    error_page 503 @maintenance;
 
-    location = /maintenance.html {
-        root /var/www/html;
+    location @maintenance {
         internal;
+        root /var/www/html;
+        rewrite ^ /maintenance.html break;
     }
 
     location / {
