@@ -27,6 +27,3 @@
 
   roles:
     - nginx
-
-- debug:
-  var: terraform_outputs
