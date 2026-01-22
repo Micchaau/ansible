@@ -26,7 +26,17 @@
 
     - name: Extract Terraform outputs
       set_fact:
-        terraform_outputs: "{{ tf_state.json.outputs }}"
+        terraform_outputs: >-
+          {{
+            tf_state.json.outputs
+              if (tf_state is mapping and 'json' in tf_state)
+            else
+            (tf_state.content | from_json).outputs
+              if (tf_state is mapping and 'content' in tf_state)
+            else
+            tf_state.outputs
+          }}
+
 
   roles:
     - nginx
