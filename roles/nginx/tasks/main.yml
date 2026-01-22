@@ -4,6 +4,12 @@
     state: present
     update_cache: true
 
+- name: Remove default nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+
 - name: Enable and start nginx
   systemd:
     name: nginx
