@@ -12,6 +12,7 @@ server {
     error_page 503 /maintenance.html;
 
     location = /maintenance.html {
+        root /var/www/html;
         internal;
     }
 
