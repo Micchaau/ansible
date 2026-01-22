@@ -4,33 +4,32 @@
     state: present
     update_cache: true
 
-- name: Remove default nginx site
-  file:
-    path: /etc/nginx/sites-enabled/default
-    state: absent
-  notify: restart nginx
-
 - name: Enable and start nginx
   systemd:
     name: nginx
     enabled: true
     state: started
 
+- name: Remove default nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: reload nginx
+
 - name: Deploy nginx vhost config
   template:
     src: web.conf.j2
     dest: /etc/nginx/conf.d/web.conf
     mode: "0644"
-  notify: restart nginx
+  notify: reload nginx
 
 - name: Deploy index.html
   template:
     src: index.html.j2
     dest: /var/www/html/index.html
     mode: "0644"
-  notify: restart nginx
 
-- name: Deploy maintenance page
+- name: Deploy maintenance.html page
   template:
     src: maintenance.html.j2
     dest: /var/www/html/maintenance.html
