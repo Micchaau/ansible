@@ -1,8 +1,33 @@
-- name: Install nginx
+- name: Install nginx and python3-cryptography
   apt:
-    name: nginx
+    name:
+      - nginx
+      - python3-cryptography
     state: present
     update_cache: true
+
+- name: Create directory for certificates
+  file:
+    path: /etc/nginx/ssl
+    state: directory
+    mode: '0755'
+
+- name: Create private key
+  community.crypto.openssl_privatekey:
+    path: /etc/nginx/ssl/nginx.key
+
+- name: Create CSR
+  community.crypto.openssl_csr:
+    path: /etc/nginx/ssl/nginx.csr
+    privatekey_path: /etc/nginx/ssl/nginx.key
+    common_name: "mgoral.pl"
+
+- name: Create self-signed certificate
+  community.crypto.x509_certificate:
+    path: /etc/nginx/ssl/nginx.crt
+    privatekey_path: /etc/nginx/ssl/nginx.key
+    csr_path: /etc/nginx/ssl/nginx.csr
+    provider: selfsigned
 
 - name: Enable and start nginx
   systemd:

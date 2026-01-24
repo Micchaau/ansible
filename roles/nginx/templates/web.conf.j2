@@ -1,27 +1,28 @@
 server {
-    listen 80 default_server;
+    listen 80;
     server_name _;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name _;
+
+    ssl_certificate /etc/nginx/ssl/nginx.crt;
+    ssl_certificate_key /etc/nginx/ssl/nginx.key;
 
     root /var/www/html;
     index index.html;
 
-    location = /health {
-        return 200 "OK\n";
-    }
-
-    if (-f /var/www/html/.maintenance) {
-        return 503;
+    location / {
+        if (-f $document_root/.maintenance) {
+            return 503;
+        }
+        try_files $uri $uri/ =404;
     }
 
     error_page 503 @maintenance;
-
     location @maintenance {
-        internal;
-        root /var/www/html;
-        rewrite ^ /maintenance.html break;
-    }
-
-    location / {
-        try_files $uri $uri/ =404;
+        rewrite ^(.*)$ /maintenance.html break;
     }
 }
